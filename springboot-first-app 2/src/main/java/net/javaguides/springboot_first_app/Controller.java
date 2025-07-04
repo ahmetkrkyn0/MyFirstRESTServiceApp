@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/customers") // Tüm endpointler için bir ana yol tanımladım
-public class WelcomeController {
+public class Controller {
 
     @Autowired
     private CustomerRepository customerRepository;
