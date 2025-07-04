@@ -28,4 +28,15 @@ public class WelcomeController {
     public Customer findCustomerById(@PathVariable Integer id) {
         return customerRepository.findCustomerById(id);
     }
+
+    @DeleteMapping("/delete/{id}")
+    public String deleteCustomerByID(@PathVariable Integer id){
+        customerRepository.deleteById(id);
+        return "Deleted customer with id: " + id;
+    }
+    @PostMapping
+    public String addCustomer(@RequestBody Customer customer){
+        customerRepository.save(customer);
+        return "Added new customer to repo!";
+    }
 }
