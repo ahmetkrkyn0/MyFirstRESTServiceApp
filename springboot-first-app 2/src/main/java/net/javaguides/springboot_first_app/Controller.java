@@ -30,12 +30,13 @@ public class Controller {
     }
 
     @DeleteMapping("/delete/{id}")
-    public String deleteCustomerByID(@PathVariable Integer id){
+    public String deleteCustomerByID(@PathVariable Integer id) {
         customerRepository.deleteById(id);
         return "Deleted customer with id: " + id;
     }
+
     @PostMapping
-    public String addCustomer(@RequestBody Customer customer){
+    public String addCustomer(@RequestBody Customer customer) {
         customerRepository.save(customer);
         return "Added new customer to repo!";
     }
