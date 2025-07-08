@@ -16,7 +16,7 @@ public class CustomerService {
 
     public Customer getCustomerById(Integer id){
         return customerRepository.findById(id)
-                                 .orElseThrow(() -> new CustomerNotFoundException("ID'si" + id + "olan müşteri bulunamadı."));
+                                 .orElseThrow(() -> new CustomerNotFoundException("ID'si " + id + " olan müşteri bulunamadı."));
 
     }
     public Iterable<Customer> getAllCustomers() {
@@ -29,7 +29,7 @@ public class CustomerService {
 
     public Customer updateCustomer(Integer id, Customer updatedCustomer) {
         if (!customerRepository.existsById(id)) {
-            throw new CustomerNotFoundException("Güncellenmek istenen ID'si " + id + " olan müşteri bulunamadı.");
+            throw new CustomerNotFoundException("Güncellenmek istenen ID'si" + id + "   olan müşteri bulunamadı.");
         }
         updatedCustomer.setId(id);
         return customerRepository.save(updatedCustomer);
