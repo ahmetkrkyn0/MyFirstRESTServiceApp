@@ -4,7 +4,6 @@ import net.javaguides.springboot_first_app.Customer;
 import net.javaguides.springboot_first_app.CustomerRepository;
 import net.javaguides.springboot_first_app.exception.CustomerNotFoundException;
 import org.springframework.stereotype.Service;
-import java.util.Optional;
 
 @Service
 public class CustomerService {
