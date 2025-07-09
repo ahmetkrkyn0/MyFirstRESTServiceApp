@@ -77,23 +77,21 @@ public class Controller {
 
     // --- STUDENT ENDPOINTS --- //
 
-    @PostMapping("/students/add")
-    public ResponseEntity<String> addStudent(@Valid @RequestBody Student student, BindingResult bindingResult) {
+    @PostMapping("/students")
+    public ResponseEntity<?> addStudent(@Valid @RequestBody Student student, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            StringBuilder errorMessage = new StringBuilder("Validation Error: ");
-            bindingResult.getAllErrors().forEach(error -> errorMessage.append(error.getDefaultMessage()).append("; "));
-            return ResponseEntity.badRequest().body(errorMessage.toString());
+            return ResponseEntity.badRequest().body(bindingResult.getFieldErrors());
         }
         studentService.saveStudent(student);
         return new ResponseEntity<>("New student successfully added!", HttpStatus.CREATED);
     }
 
-    @GetMapping("/students/list")
+    @GetMapping("/students")
     public Iterable<Student> getStudents() {
         return studentService.getAllStudents();
     }
 
-    @GetMapping("/students/find/{id}")
+    @GetMapping("/students/{id}")
     public ResponseEntity<Student> findStudentById(@PathVariable Integer id) {
         Student student = studentService.getStudentById(id);
         if (student == null) {
@@ -102,20 +100,18 @@ public class Controller {
         return ResponseEntity.ok(student);
     }
 
-    @DeleteMapping("/students/delete/{id}") // Öğrenci silme endpoint'i
+    @DeleteMapping("/students/{id}")
     public ResponseEntity<String> deleteStudentByID(@PathVariable Integer id) {
         studentService.deleteStudentById(id);
         return ResponseEntity.ok("Deleted student with id: " + id);
     }
 
-    @PutMapping("/students/update/{id}") // Öğrenci güncelleme endpoint'i (doğrulamalı)
+    @PutMapping("/students/{id}")
     public ResponseEntity<?> updateStudent(@PathVariable Integer id,
                                            @Valid @RequestBody Student student,
                                            BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            StringBuilder errorMessage = new StringBuilder("Validation Error: ");
-            bindingResult.getAllErrors().forEach(error -> errorMessage.append(error.getDefaultMessage()).append("; "));
-            return ResponseEntity.badRequest().body(errorMessage.toString());
+            return ResponseEntity.badRequest().body(bindingResult.getFieldErrors());
         }
         Student existingStudent = studentService.getStudentById(id);
         if (existingStudent == null) {
