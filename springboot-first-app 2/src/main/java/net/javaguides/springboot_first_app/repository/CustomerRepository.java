@@ -1,4 +1,4 @@
-package net.javaguides.springboot_first_app;
+package net.javaguides.springboot_first_app.repository;
 
 import net.javaguides.springboot_first_app.bean.Customer;
 import org.springframework.data.repository.CrudRepository;

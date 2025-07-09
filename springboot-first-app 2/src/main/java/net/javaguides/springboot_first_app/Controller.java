@@ -1,5 +1,6 @@
 package net.javaguides.springboot_first_app;
 
+import net.javaguides.springboot_first_app.bean.Student;
 import net.javaguides.springboot_first_app.bean.Customer;
 import net.javaguides.springboot_first_app.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/customers")
+@RequestMapping("/api")
 public class Controller {
 
     private final CustomerService customerService;
@@ -18,7 +19,7 @@ public class Controller {
         this.customerService = customerService;
     }
 
-    @PostMapping("/add")
+    @PostMapping("/customer/add")
     public String addCustomer(@RequestParam String first, @RequestParam String last) {
         Customer customer = new Customer();
         customer.setFirstName(first);
@@ -27,18 +28,18 @@ public class Controller {
         return "Added new customer to repo!";
     }
 
-    @GetMapping("/list")
+    @GetMapping("/customer/list")
     public Iterable<Customer> getCustomers() {
         return customerService.getAllCustomers();
     }
 
-    @GetMapping("/find/{id}")
+    @GetMapping("/customer/find/{id}")
     public ResponseEntity<Customer> findCustomerById(@PathVariable Integer id) {
         Customer customer = customerService.getCustomerById(id);
         return ResponseEntity.ok(customer);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/customer/delete/{id}")
     public ResponseEntity<String> deleteCustomerByID(@PathVariable Integer id) {
         customerService.deleteCustomer(id);
         return ResponseEntity.ok("Deleted customer with id: " + id);
@@ -50,9 +51,14 @@ public class Controller {
         return new ResponseEntity<>("Added new customer to repo!", HttpStatus.CREATED);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/customer/update/{id}")
     public ResponseEntity<Customer> updateCustomer(@PathVariable Integer id, @RequestBody Customer customer) {
         Customer updatedCustomer = customerService.updateCustomer(id, customer);
         return ResponseEntity.ok(updatedCustomer);
+    }
+
+    @PostMapping
+    public ResponseEntity<String> addStudent(@RequestBody Student student){
+
     }
 }

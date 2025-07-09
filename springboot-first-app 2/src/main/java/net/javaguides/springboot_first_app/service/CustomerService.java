@@ -1,7 +1,7 @@
 package net.javaguides.springboot_first_app.service;
 
 import net.javaguides.springboot_first_app.bean.Customer;
-import net.javaguides.springboot_first_app.CustomerRepository;
+import net.javaguides.springboot_first_app.repository.CustomerRepository;
 import net.javaguides.springboot_first_app.exception.CustomerNotFoundException;
 import org.springframework.stereotype.Service;
 
