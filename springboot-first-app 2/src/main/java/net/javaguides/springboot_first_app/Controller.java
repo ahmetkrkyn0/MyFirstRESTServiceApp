@@ -1,5 +1,6 @@
 package net.javaguides.springboot_first_app;
 
+import net.javaguides.springboot_first_app.bean.Customer;
 import net.javaguides.springboot_first_app.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
