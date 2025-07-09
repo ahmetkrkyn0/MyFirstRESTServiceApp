@@ -77,7 +77,7 @@ public class Controller {
 
     // --- STUDENT ENDPOINTS --- //
 
-    @PostMapping("/students")
+    @PostMapping("/students/add")
     public ResponseEntity<?> addStudent(@Valid @RequestBody Student student, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().body(bindingResult.getFieldErrors());
@@ -86,12 +86,12 @@ public class Controller {
         return new ResponseEntity<>("New student successfully added!", HttpStatus.CREATED);
     }
 
-    @GetMapping("/students")
+    @GetMapping("/students/list")
     public Iterable<Student> getStudents() {
         return studentService.getAllStudents();
     }
 
-    @GetMapping("/students/{id}")
+    @GetMapping("/students/find/{id}")
     public ResponseEntity<Student> findStudentById(@PathVariable Integer id) {
         Student student = studentService.getStudentById(id);
         if (student == null) {
@@ -100,13 +100,13 @@ public class Controller {
         return ResponseEntity.ok(student);
     }
 
-    @DeleteMapping("/students/{id}")
+    @DeleteMapping("/students/delete/{id}")
     public ResponseEntity<String> deleteStudentByID(@PathVariable Integer id) {
         studentService.deleteStudentById(id);
         return ResponseEntity.ok("Deleted student with id: " + id);
     }
 
-    @PutMapping("/students/{id}")
+    @PutMapping("/students/update/{id}")
     public ResponseEntity<?> updateStudent(@PathVariable Integer id,
                                            @Valid @RequestBody Student student,
                                            BindingResult bindingResult) {
