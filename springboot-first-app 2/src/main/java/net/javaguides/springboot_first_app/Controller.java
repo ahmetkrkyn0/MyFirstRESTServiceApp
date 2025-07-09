@@ -78,9 +78,11 @@ public class Controller {
     // --- STUDENT ENDPOINTS --- //
 
     @PostMapping("/students/add")
-    public ResponseEntity<?> addStudent(@Valid @RequestBody Student student, BindingResult bindingResult) {
+    public ResponseEntity<String> addStudent(@Valid @RequestBody Student student, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(bindingResult.getFieldErrors());
+            StringBuilder errorMessage = new StringBuilder("Validation Error: ");
+            bindingResult.getAllErrors().forEach(error -> errorMessage.append(error.getDefaultMessage()).append("; "));
+            return ResponseEntity.badRequest().body(errorMessage.toString());
         }
         studentService.saveStudent(student);
         return new ResponseEntity<>("New student successfully added!", HttpStatus.CREATED);
@@ -100,18 +102,20 @@ public class Controller {
         return ResponseEntity.ok(student);
     }
 
-    @DeleteMapping("/students/delete/{id}")
+    @DeleteMapping("/students/delete/{id}") // Öğrenci silme endpoint'i
     public ResponseEntity<String> deleteStudentByID(@PathVariable Integer id) {
         studentService.deleteStudentById(id);
         return ResponseEntity.ok("Deleted student with id: " + id);
     }
 
-    @PutMapping("/students/update/{id}")
+    @PutMapping("/students/update/{id}") // Öğrenci güncelleme endpoint'i (doğrulamalı)
     public ResponseEntity<?> updateStudent(@PathVariable Integer id,
                                            @Valid @RequestBody Student student,
                                            BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(bindingResult.getFieldErrors());
+            StringBuilder errorMessage = new StringBuilder("Validation Error: ");
+            bindingResult.getAllErrors().forEach(error -> errorMessage.append(error.getDefaultMessage()).append("; "));
+            return ResponseEntity.badRequest().body(errorMessage.toString());
         }
         Student existingStudent = studentService.getStudentById(id);
         if (existingStudent == null) {
