@@ -1,4 +1,4 @@
-package net.javaguides.springboot_first_app;
+package net.javaguides.springboot_first_app.bean;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
