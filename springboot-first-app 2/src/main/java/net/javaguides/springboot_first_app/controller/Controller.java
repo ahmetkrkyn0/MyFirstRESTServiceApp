@@ -98,7 +98,7 @@ public class Controller {
 
     @DeleteMapping("/students/{id}")
     public ResponseEntity<String> deleteStudentByID(@PathVariable Integer id) {
-        studentService.deleteStudentById(id); 
+        studentService.deleteStudentById(id);
         return ResponseEntity.ok("Deleted student with id: " + id);
     }
 
