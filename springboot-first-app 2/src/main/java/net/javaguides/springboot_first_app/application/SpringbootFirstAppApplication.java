@@ -1,4 +1,4 @@
-package net.javaguides.springboot_first_app;
+package net.javaguides.springboot_first_app.application;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

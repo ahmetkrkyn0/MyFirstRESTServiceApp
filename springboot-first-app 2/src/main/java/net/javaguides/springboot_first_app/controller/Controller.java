@@ -1,4 +1,4 @@
-package net.javaguides.springboot_first_app;
+package net.javaguides.springboot_first_app.controller;
 
 import net.javaguides.springboot_first_app.bean.Customer;
 import net.javaguides.springboot_first_app.bean.Student;
