@@ -26,6 +26,11 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
+        // BU SATIRLARI BURAYA EKLEYİN VE UYGULAMAYI YENİDEN BAŞLATIN
+        System.out.println("Encoded Admin Password: " + passwordEncoder.encode("admin123"));
+        System.out.println("Encoded User Password: " + passwordEncoder.encode("user123"));
+        // -----------------------------------------------------
+
         UserDetails admin = User.withUsername("admin")
                 .password(passwordEncoder.encode("admin123"))
                 .roles("ADMIN")
