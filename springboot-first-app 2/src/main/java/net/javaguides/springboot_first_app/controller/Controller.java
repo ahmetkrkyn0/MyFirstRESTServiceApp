@@ -26,12 +26,12 @@ public class Controller {
 
     // --- CUSTOMER ENDPOINTS --- //
 
-    @GetMapping("/customers/list")
+    @GetMapping("/customers")
     public Iterable<Customer> getCustomers() {
         return customerService.getAllCustomers();
     }
 
-    @GetMapping("/customers/find/{id}")
+    @GetMapping("/customers/{id}")
     public ResponseEntity<Customer> findCustomerById(@PathVariable Integer id) {
         Customer customer = customerService.getCustomerById(id);
         if (customer == null) {
@@ -40,31 +40,27 @@ public class Controller {
         return ResponseEntity.ok(customer);
     }
 
-    @DeleteMapping("/customers/delete/{id}")
+    @DeleteMapping("/customers/{id}")
     public ResponseEntity<String> deleteCustomerByID(@PathVariable Integer id) {
         customerService.deleteCustomer(id);
         return ResponseEntity.ok("Deleted customer with id: " + id);
     }
 
-    @PostMapping("/customers/add")
-    public ResponseEntity<String> addCustomer(@Valid @RequestBody Customer customer, BindingResult bindingResult) {
+    @PostMapping("/customers")
+    public ResponseEntity<?> addCustomer(@Valid @RequestBody Customer customer, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            StringBuilder errorMessage = new StringBuilder("Validation Error: ");
-            bindingResult.getAllErrors().forEach(error -> errorMessage.append(error.getDefaultMessage()).append("; "));
-            return ResponseEntity.badRequest().body(errorMessage.toString());
+            return ResponseEntity.badRequest().body(bindingResult.getFieldErrors());
         }
         customerService.saveCustomer(customer);
         return new ResponseEntity<>("New customer successfully added!", HttpStatus.CREATED);
     }
 
-    @PutMapping("/customers/update/{id}")
+    @PutMapping("/customers/{id}")
     public ResponseEntity<?> updateCustomer(@PathVariable Integer id,
                                             @Valid @RequestBody Customer customer,
                                             BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            StringBuilder errorMessage = new StringBuilder("Validation Error: ");
-            bindingResult.getAllErrors().forEach(error -> errorMessage.append(error.getDefaultMessage()).append("; "));
-            return ResponseEntity.badRequest().body(errorMessage.toString());
+            return ResponseEntity.badRequest().body(bindingResult.getFieldErrors());
         }
         Customer existingCustomer = customerService.getCustomerById(id);
         if (existingCustomer == null) {
@@ -77,23 +73,21 @@ public class Controller {
 
     // --- STUDENT ENDPOINTS --- //
 
-    @PostMapping("/students/add")
-    public ResponseEntity<String> addStudent(@Valid @RequestBody Student student, BindingResult bindingResult) {
+    @PostMapping("/students")
+    public ResponseEntity<?> addStudent(@Valid @RequestBody Student student, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            StringBuilder errorMessage = new StringBuilder("Validation Error: ");
-            bindingResult.getAllErrors().forEach(error -> errorMessage.append(error.getDefaultMessage()).append("; "));
-            return ResponseEntity.badRequest().body(errorMessage.toString());
+            return ResponseEntity.badRequest().body(bindingResult.getFieldErrors());
         }
         studentService.saveStudent(student);
         return new ResponseEntity<>("New student successfully added!", HttpStatus.CREATED);
     }
 
-    @GetMapping("/students/list")
+    @GetMapping("/students")
     public Iterable<Student> getStudents() {
         return studentService.getAllStudents();
     }
 
-    @GetMapping("/students/find/{id}")
+    @GetMapping("/students/{id}")
     public ResponseEntity<Student> findStudentById(@PathVariable Integer id) {
         Student student = studentService.getStudentById(id);
         if (student == null) {
@@ -102,20 +96,18 @@ public class Controller {
         return ResponseEntity.ok(student);
     }
 
-    @DeleteMapping("/students/delete/{id}") // Öğrenci silme endpoint'i
+    @DeleteMapping("/students/{id}")
     public ResponseEntity<String> deleteStudentByID(@PathVariable Integer id) {
-        studentService.deleteStudentById(id);
+        studentService.deleteStudentById(id); 
         return ResponseEntity.ok("Deleted student with id: " + id);
     }
 
-    @PutMapping("/students/update/{id}") // Öğrenci güncelleme endpoint'i (doğrulamalı)
+    @PutMapping("/students/{id}")
     public ResponseEntity<?> updateStudent(@PathVariable Integer id,
                                            @Valid @RequestBody Student student,
                                            BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            StringBuilder errorMessage = new StringBuilder("Validation Error: ");
-            bindingResult.getAllErrors().forEach(error -> errorMessage.append(error.getDefaultMessage()).append("; "));
-            return ResponseEntity.badRequest().body(errorMessage.toString());
+            return ResponseEntity.badRequest().body(bindingResult.getFieldErrors());
         }
         Student existingStudent = studentService.getStudentById(id);
         if (existingStudent == null) {
