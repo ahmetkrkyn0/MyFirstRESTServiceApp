@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
+import java.util.Base64;
 
 @RestController
 @RequestMapping("/api")
@@ -115,5 +116,11 @@ public class Controller {
         }
         Student updatedStudent = studentService.updateStudent(id, student);
         return ResponseEntity.ok(updatedStudent);
+    }
+
+    @GetMapping("/token")
+    public ResponseEntity<String> generateSimpleJWTToken() {
+        String token = Base64.getEncoder().encodeToString("admin123".getBytes());
+        return ResponseEntity.ok(token);
     }
 }
