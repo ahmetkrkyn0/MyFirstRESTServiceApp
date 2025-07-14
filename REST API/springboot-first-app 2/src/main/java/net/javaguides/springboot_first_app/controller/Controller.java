@@ -3,10 +3,13 @@ package net.javaguides.springboot_first_app.controller;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import net.javaguides.springboot_first_app.bean.Customer;
 import net.javaguides.springboot_first_app.bean.Student;
 import net.javaguides.springboot_first_app.service.CustomerService;
 import net.javaguides.springboot_first_app.service.StudentService;
+import org.springframework.http.HttpHeaders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +17,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -139,6 +144,15 @@ public class Controller {
         } catch(JWTCreationException exception){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Token oluşturulurken hata oluştu");
+        }
+    }
+
+    @GetMapping("/decode-token")
+    public ResponseEntity<?> decodeJWTToken(@RequestHeader(name = HttpHeaders.AUTHORIZATION, required = false) String token){
+        try{
+            if (token == null || token.isEmpty()){
+                return ResponseEntity.badRequest().body("JWT token is missing.");
+            }
         }
     }
 }
