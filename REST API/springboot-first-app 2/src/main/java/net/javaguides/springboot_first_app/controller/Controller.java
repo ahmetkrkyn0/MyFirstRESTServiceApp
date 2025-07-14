@@ -153,6 +153,26 @@ public class Controller {
             if (token == null || token.isEmpty()){
                 return ResponseEntity.badRequest().body("JWT token is missing.");
             }
+            if (token.startsWith("Bearer ")){
+                token = token.substring(7);
+            }
+
+            Algorithm algorithm = Algorithm.HMAC256("secret");
+            DecodedJWT jwt = JWT.require(algorithm)
+                                .build()
+                                .verify(token);
+
+            Map<String, Object> tokenInfo = new HashMap<>();
+            tokenInfo.put("issuer", jwt.getIssuer());
+            tokenInfo.put("subject", jwt.getSubject());
+            tokenInfo.put("issuedAt", jwt.getIssuedAt());
+            tokenInfo.put("expiresAt", jwt.getExpiresAt());
+            tokenInfo.put("userId", jwt.getClaim("userId").asString());
+            tokenInfo.put("role", jwt.getClaim("role").asString());
+
+            return ResponseEntity.ok(tokenInfo);
+        } catch(JWTVerificationException exception){
+            return ResponseEntity.badRequest().body("JWT token is invalid.");
         }
     }
 }
