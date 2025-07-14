@@ -1,5 +1,8 @@
 package net.javaguides.springboot_first_app.controller;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTCreationException;
 import net.javaguides.springboot_first_app.bean.Customer;
 import net.javaguides.springboot_first_app.bean.Student;
 import net.javaguides.springboot_first_app.service.CustomerService;
@@ -10,7 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
-import java.util.Base64;
+import java.util.Date;
 
 @RestController
 @RequestMapping("/api")
@@ -119,8 +122,23 @@ public class Controller {
     }
 
     @GetMapping("/token")
-    public ResponseEntity<String> generateSimpleJWTToken() {
-        String token = Base64.getEncoder().encodeToString("admin123".getBytes());
-        return ResponseEntity.ok(token);
+    public ResponseEntity<String> generateSimpleJWTToken(){
+        try{
+            Algorithm algorithm = Algorithm.HMAC256("secret");
+
+            String token = JWT.create()
+                    .withIssuer("api-service")
+                    .withSubject("user-authentication")
+                    .withIssuedAt(new Date())
+                    .withExpiresAt(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
+                    .withClaim("userId", "1")
+                    .withClaim("role", "USER")
+                    .sign(algorithm);
+
+            return ResponseEntity.ok(token);
+        } catch(JWTCreationException exception){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Token oluşturulurken hata oluştu");
+        }
     }
 }
