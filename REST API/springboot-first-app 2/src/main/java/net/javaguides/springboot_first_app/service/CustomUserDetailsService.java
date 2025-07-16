@@ -8,10 +8,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
-
     private final PasswordEncoder passwordEncoder;
 
     public CustomUserDetailsService(PasswordEncoder passwordEncoder) {
@@ -20,12 +20,12 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // Burada gerçek kullanıcı veritabanı sorgusu yapılmalı
-        // Bu sadece test amaçlı basit bir örnektir
         if ("testuser".equals(username)) {
-            return new User(username, 
-                          passwordEncoder.encode("password"),
-                          new ArrayList<>());
+            return User.builder()
+                .username(username)
+                .password(passwordEncoder.encode("password"))
+                .authorities(Collections.emptyList())
+                .build();
         }
         throw new UsernameNotFoundException("Kullanıcı bulunamadı: " + username);
     }
