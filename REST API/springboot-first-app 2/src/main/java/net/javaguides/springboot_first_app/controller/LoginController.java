@@ -1,8 +1,8 @@
 package net.javaguides.springboot_first_app.controller;
 
-import com.example.yourapp.model.AuthenticationRequest; // Giriş isteği için DTO
-import com.example.yourapp.model.AuthenticationResponse; // Giriş yanıtı için DTO
-import com.example.yourapp.util.JwtUtil;
+import net.javaguides.springboot_first_app.model.AuthenticationResponse;
+import net.javaguides.springboot_first_app.model.AuthenticationRequest;
+import net.javaguides.springboot_first_app.Util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
