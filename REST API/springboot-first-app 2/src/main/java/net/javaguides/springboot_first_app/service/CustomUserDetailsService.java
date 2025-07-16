@@ -7,9 +7,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
@@ -22,10 +19,11 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         if ("testuser".equals(username)) {
             return User.builder()
-                .username(username)
-                .password(passwordEncoder.encode("password"))
-                .authorities(Collections.emptyList())
-                .build();
+                    .username(username)
+                    .password(passwordEncoder.encode("password"))
+                    .roles("USER") // Temel kullanıcı rolü
+                    .authorities("ROLE_USER", "READ", "WRITE") // Ek yetkiler
+                    .build();
         }
         throw new UsernameNotFoundException("Kullanıcı bulunamadı: " + username);
     }
