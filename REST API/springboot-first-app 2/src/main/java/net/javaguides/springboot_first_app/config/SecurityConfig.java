@@ -35,8 +35,10 @@ public class SecurityConfig {
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/authenticate", "/h2-console/**").permitAll()
-                        .requestMatchers("/api/students/**", "/api/customers/**").authenticated()
+                        .requestMatchers("/api/authenticate").permitAll()
+                        .requestMatchers("/h2-console/**").permitAll()
+                        .requestMatchers("/api/students/**").hasAnyAuthority("ROLE_USER")
+                        .requestMatchers("/api/customers/**").hasAnyAuthority("ROLE_USER")
                         .anyRequest().authenticated())
                 .headers(headers ->
                         headers.addHeaderWriter(new XFrameOptionsHeaderWriter(
