@@ -21,10 +21,10 @@ public class CustomUserDetailsService implements UserDetailsService {
             return User.builder()
                     .username(username)
                     .password(passwordEncoder.encode("password"))
-                    .roles("USER") // Temel kullanıcı rolü
-                    .authorities("ROLE_USER", "READ", "WRITE") // Ek yetkiler
+                    .roles("USER")
                     .build();
         }
         throw new UsernameNotFoundException("Kullanıcı bulunamadı: " + username);
     }
 }
+
