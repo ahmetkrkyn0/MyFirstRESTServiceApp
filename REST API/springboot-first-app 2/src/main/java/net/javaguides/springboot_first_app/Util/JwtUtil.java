@@ -5,10 +5,10 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
@@ -18,17 +18,11 @@ import java.util.function.Function;
 @Component
 public class JwtUtil {
 
-    // Bu değerlerin application.properties'den doğru çekildiğinden emin olmalıyız
-    @Value("${jwt.secret}")
+    @Value("${jwt.secret:MySecretKey}")
     private String SECRET_KEY; // "jwt.secret" değerini okur
 
-    @Value("${jwt.expiration}")
+    @Value("${jwt.expiration:86400000}")
     private long EXPIRATION_TIME; // "jwt.expiration" değerini okur
-
-    // ... geri kalan metotlar (generateToken, validateToken, extractUsername vb.)
-    // JwtUtil sınıfının tam kodunu görmek, hata ayıklamamıza yardımcı olabilir.
-
-    // Aşağıdaki metotları daha önceki sohbetimizden eklemiştim, bunlar doğru olmalı:
 
     public String generateToken(String username) {
         Map<String, Object> claims = new HashMap<>();
@@ -46,7 +40,7 @@ public class JwtUtil {
     }
 
     private Key getSignKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY); // SECRET_KEY kullanılıyor
+        byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
@@ -79,4 +73,5 @@ public class JwtUtil {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
+
 }
