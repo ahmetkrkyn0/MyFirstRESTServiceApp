@@ -126,7 +126,7 @@ public class Controller {
         return ResponseEntity.ok(updatedStudent);
     }
 
-    @GetMapping("/token")
+   /* @GetMapping("/token")
     public ResponseEntity<String> generateSimpleJWTToken(){
         try{
             Algorithm algorithm = Algorithm.HMAC256("secret");
@@ -174,5 +174,5 @@ public class Controller {
         } catch(JWTVerificationException exception){
             return ResponseEntity.badRequest().body("JWT token is invalid.");
         }
-    }
+    } */
 }
