@@ -5,8 +5,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +16,6 @@ public class JwtUtil {
     private final long jwtExpiration;
 
     public JwtUtil() {
-        // Sabit değerler kullanarak bağımlılığı kaldıralım
         this.secret = "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970";
         this.jwtExpiration = 864_000_000; // 10 gün
     }
