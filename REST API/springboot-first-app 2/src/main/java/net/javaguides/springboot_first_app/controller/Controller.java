@@ -1,5 +1,6 @@
 package net.javaguides.springboot_first_app.controller;
 
+import net.javaguides.springboot_first_app.Util.JwtUtil;
 import net.javaguides.springboot_first_app.bean.Customer;
 import net.javaguides.springboot_first_app.bean.Student;
 import net.javaguides.springboot_first_app.service.CustomerService;
@@ -17,11 +18,13 @@ public class Controller {
 
     private final CustomerService customerService;
     private final StudentService studentService;
+    private final JwtUtil jwtUtil;
 
     @Autowired
-    public Controller(CustomerService customerService, StudentService studentService) {
+    public Controller(CustomerService customerService, StudentService studentService, JwtUtil jwtUtil) {
         this.customerService = customerService;
         this.studentService = studentService;
+        this.jwtUtil = jwtUtil;
     }
 
     // --- CUSTOMER ENDPOINTS --- //
@@ -74,7 +77,23 @@ public class Controller {
     // --- STUDENT ENDPOINTS --- //
 
     @PostMapping("/students")
-    public ResponseEntity<?> addStudent(@Valid @RequestBody Student student, BindingResult bindingResult) {
+    public ResponseEntity<?> addStudent(@Valid @RequestBody Student student,
+                                        BindingResult bindingResult,
+                                        @RequestHeader(value = "Authorization", required = false) String authHeader) {
+        // JWT kontrolu ekledim
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("JWT token eksik veya geçersiz format.");
+        }
+
+        // Token doğrulama işlemi
+        String token = authHeader.substring(7);
+        if (!jwtUtil.validateToken(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Geçersiz veya süresi dolmuş token.");
+        }
+
+        // Normal işlem akışı
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().body(bindingResult.getFieldErrors());
         }
