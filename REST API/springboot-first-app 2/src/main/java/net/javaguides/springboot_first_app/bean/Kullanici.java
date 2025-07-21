@@ -5,26 +5,29 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
+@Table(name = "kullanici")
 public class Kullanici {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     @Getter
     @Setter
-    private Integer id;
+    private Long id;
 
+    @Column(nullable = false, unique = true)
     @Getter
     @Setter
     private String kullaniciAdi;
 
+    @Column(nullable = false)
     @Getter
     @Setter
     private String sifre;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     @Getter
     @Setter
-    private KullaniciRol rol;
-
-
+    private KullaniciRol rol = KullaniciRol.MISAFIR;
 }
