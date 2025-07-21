@@ -32,24 +32,25 @@ public class Controller {
 
     @GetMapping("/customers")
     public ResponseEntity<?> getCustomers(@RequestHeader(value = "Authorization", required = false) String authHeader) {
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String token = authHeader.substring(7);
+            if (!jwtUtil.validateToken(token)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body("Geçersiz token");
+            }
+
+            KullaniciRol rol = jwtUtil.extractRol(token);
+            if (rol != KullaniciRol.ADMIN && rol != KullaniciRol.KULLANICI) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("Bu işlem için yetkiniz yok");
+            }
+
+            return ResponseEntity.ok(customerService.getAllCustomers());
+        } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body("Token gerekli");
         }
 
-        String token = authHeader.substring(7);
-        if(!jwtUtil.validateToken(token)){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("Geçersiz token");
-        }
-
-        KullaniciRol rol = jwtUtil.extractRol(token);
-        if(rol != KullaniciRol.ADMIN && rol != KullaniciRol.KULLANICI){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body("Bu işlem için yetkiniz yok");
-        }
-
-        return ResponseEntity.ok(customerService.getAllCustomers());
     }
 
     @GetMapping("/customers/{id}")
