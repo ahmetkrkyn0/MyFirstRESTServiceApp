@@ -20,7 +20,7 @@ public class LoginController {
     public ResponseEntity<AuthenticationResponse> getToken(@RequestBody Kullanici kullanici) {
 
         String user = kullanici.getKullaniciAdi() + ":" + kullanici.getSifre();
-        String jwt = jwtUtil.generateToken(user);
+        String jwt = jwtUtil.generateToken(user, kullanici.getRol());
 
         return ResponseEntity.ok(new AuthenticationResponse(jwt));
     }

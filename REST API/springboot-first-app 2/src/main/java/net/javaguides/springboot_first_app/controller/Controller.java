@@ -2,6 +2,7 @@ package net.javaguides.springboot_first_app.controller;
 
 import net.javaguides.springboot_first_app.Util.JwtUtil;
 import net.javaguides.springboot_first_app.bean.Customer;
+import net.javaguides.springboot_first_app.bean.KullaniciRol;
 import net.javaguides.springboot_first_app.bean.Student;
 import net.javaguides.springboot_first_app.service.CustomerService;
 import net.javaguides.springboot_first_app.service.StudentService;
@@ -30,8 +31,25 @@ public class Controller {
     // --- CUSTOMER ENDPOINTS --- //
 
     @GetMapping("/customers")
-    public Iterable<Customer> getCustomers() {
-        return customerService.getAllCustomers();
+    public ResponseEntity<?> getCustomers(@RequestHeader(value = "Authorization", required = false) String authHeader) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Token gerekli");
+        }
+
+        String token = authHeader.substring(7);
+        if(!jwtUtil.validateToken(token)){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Geçersiz token");
+        }
+
+        KullaniciRol rol = jwtUtil.extractRol(token);
+        if(rol != KullaniciRol.ADMIN && rol != KullaniciRol.KULLANICI){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("Bu işlem için yetkiniz yok");
+        }
+
+        return ResponseEntity.ok(customerService.getAllCustomers());
     }
 
     @GetMapping("/customers/{id}")
@@ -50,7 +68,25 @@ public class Controller {
     }
 
     @PostMapping("/customers")
-    public ResponseEntity<?> addCustomer(@Valid @RequestBody Customer customer, BindingResult bindingResult) {
+    public ResponseEntity<?> addCustomer(@Valid @RequestBody Customer customer,
+                                         BindingResult bindingResult,
+                                         @RequestHeader(value = "Authorization", required = false) String authHeader) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")){
+           return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                                .body("Token gerekli");
+        }
+
+        String token = authHeader.substring(7);
+        if(!jwtUtil.validateToken(token)){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                                 .body("Geçersiz token");
+        }
+
+        KullaniciRol rol = jwtUtil.extractRol(token);
+        if(rol != KullaniciRol.ADMIN){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                                 .body("Bu işlem için ADMIN yetkisi gerekli");
+        }
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().body(bindingResult.getFieldErrors());
         }
