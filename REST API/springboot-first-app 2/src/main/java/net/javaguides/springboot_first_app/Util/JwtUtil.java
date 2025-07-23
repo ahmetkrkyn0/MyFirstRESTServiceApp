@@ -4,7 +4,10 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import net.javaguides.springboot_first_app.bean.Kullanici;
 import net.javaguides.springboot_first_app.bean.KullaniciRol;
+import net.javaguides.springboot_first_app.repository.KullaniciRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -15,7 +18,10 @@ import java.util.Map;
 @Component
 public class JwtUtil {
     private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-    
+
+    @Autowired
+    private KullaniciRepository kullaniciRepository;
+
     public String generateToken(String username, KullaniciRol rol) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("rol", rol.name());
@@ -25,6 +31,24 @@ public class JwtUtil {
     public KullaniciRol extractRol(String token){
         final Claims claims = extractAllClaims(token);
         return KullaniciRol.valueOf(claims.get("rol", String.class));
+    }
+
+    public boolean validateUserFromToken(String token) {
+        final String usernameAndPassword = extractUsername(token);
+
+        String[] userDetails = usernameAndPassword.split(":");
+        if (userDetails.length != 2) {
+            return false;
+        }
+
+        String username = userDetails[0];
+        String password = userDetails[1];
+
+        // Veritabanında kullanıcıyı arayıp doğruladım
+        Kullanici kullanici = kullaniciRepository.findByKullaniciAdi(username)
+                .orElse(null);
+
+        return kullanici != null && kullanici.getSifre().equals(password);
     }
 
     private String createToken(Map<String, Object> claims, String subject) {
