@@ -19,7 +19,6 @@ public class LoginController {
 
     @PostMapping("/getToken")
     public ResponseEntity<?> getToken(@RequestBody Kullanici kullanici) {
-        // Kullanıcıyı veritabanında bul ve şifreyi kontrol et
         Kullanici dbUser = kullaniciRepository.findByKullaniciAdi(kullanici.getKullaniciAdi())
                 .orElse(null);
 
@@ -28,8 +27,32 @@ public class LoginController {
                     .body(new ErrorResponse("Geçersiz kullanıcı adı veya şifre"));
         }
 
-        // Kullanıcı doğrulandıktan sonra token oluştur
-        String jwt = jwtUtil.generateToken(dbUser.getKullaniciAdi(), dbUser.getRol());
+        String jwt = jwtUtil.generateToken(kullanici.getKullaniciAdi(), dbUser.getRol());
         return ResponseEntity.ok(new AuthenticationResponse(jwt));
+    }
+
+    @PostMapping("/validateToken")
+    public ResponseEntity<?> validateToken(@RequestHeader("Authorization") String token) {
+        if (token == null || !token.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ErrorResponse("Token eksik veya geçersiz"));
+        }
+
+        String jwt = token.substring(7);
+
+        // Token geçerliliğini kontrol et
+        if (!jwtUtil.validateToken(jwt)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ErrorResponse("Geçersiz veya süresi dolmuş token"));
+        }
+
+        // Token'dan kullanıcı doğrulama
+        boolean isValidUser = jwtUtil.validateUserFromToken(jwt);
+        if (!isValidUser) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ErrorResponse("Token, geçersiz kullanıcı bilgileri içeriyor"));
+        }
+
+        return ResponseEntity.ok("Valid token and user!");
     }
 }
