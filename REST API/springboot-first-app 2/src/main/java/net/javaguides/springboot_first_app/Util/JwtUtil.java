@@ -4,7 +4,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import net.javaguides.springboot_first_app.bean.Kullanici;
 import net.javaguides.springboot_first_app.bean.KullaniciRol;
 import net.javaguides.springboot_first_app.repository.KullaniciRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,24 +32,6 @@ public class JwtUtil {
         return KullaniciRol.valueOf(claims.get("rol", String.class));
     }
 
-    public boolean validateUserFromToken(String token) {
-        final String usernameAndPassword = extractUsername(token);
-
-        String[] userDetails = usernameAndPassword.split(":");
-        if (userDetails.length != 2) {
-            return false;
-        }
-
-        String username = userDetails[0];
-        String password = userDetails[1];
-
-        // Veritabanında kullanıcıyı arayıp doğruladım
-        Kullanici kullanici = kullaniciRepository.findByKullaniciAdi(username)
-                .orElse(null);
-
-        return kullanici != null && kullanici.getSifre().equals(password);
-    }
-
     private String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder()
                 .setClaims(claims)
@@ -61,9 +42,6 @@ public class JwtUtil {
                 .compact();
     }
 
-    public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
-    }
 
     public Boolean validateToken(String token) {
         try {
