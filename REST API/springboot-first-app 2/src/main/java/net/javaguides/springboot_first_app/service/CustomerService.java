@@ -3,6 +3,7 @@ package net.javaguides.springboot_first_app.service;
 import net.javaguides.springboot_first_app.bean.Customer;
 import net.javaguides.springboot_first_app.repository.CustomerRepository;
 import net.javaguides.springboot_first_app.exception.CustomerNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -10,15 +11,16 @@ public class CustomerService {
 
     private final CustomerRepository customerRepository;
 
+    @Autowired // Bu anotasyon constructor'a eklendi
     public CustomerService(CustomerRepository customerRepository) {
         this.customerRepository = customerRepository;
     }
 
-    public Customer getCustomerById(Integer id){
+    public Customer getCustomerById(Integer id) {
         return customerRepository.findById(id)
                                  .orElseThrow(() -> new CustomerNotFoundException("ID'si " + id + " olan müşteri bulunamadı."));
-
     }
+
     public Iterable<Customer> getAllCustomers() {
         return customerRepository.findAll();
     }
@@ -41,5 +43,4 @@ public class CustomerService {
         }
         customerRepository.deleteById(id);
     }
-
 }
