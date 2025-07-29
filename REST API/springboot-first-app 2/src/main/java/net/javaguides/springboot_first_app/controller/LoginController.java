@@ -9,15 +9,19 @@ import net.javaguides.springboot_first_app.repository.KullaniciRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
+@Tag(name = "Authentication API", description = "Kullanıcı giriş ve JWT token işlemleri için API")
 public class LoginController {
     private final JwtUtil jwtUtil;
     private final KullaniciRepository kullaniciRepository;
 
     @PostMapping("/getToken")
+    @Operation(summary = "JWT Token Üret", description = "Kullanıcı adı ve şifre alarak JWT token döndürür.")
     public ResponseEntity<?> getToken(@RequestBody Kullanici kullanici) {
         Kullanici dbUser = kullaniciRepository.findByKullaniciAdi(kullanici.getKullaniciAdi())
                 .orElse(null);
