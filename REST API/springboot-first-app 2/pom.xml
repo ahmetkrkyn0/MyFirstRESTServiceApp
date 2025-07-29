@@ -82,7 +82,7 @@
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>2.2.0</version> <!-- Daha sonra bu versiyonu kontrol edebilirsiniz -->
+            <version>2.3.0</version> <!-- Daha sonra bu versiyonu kontrol edebilirsiniz -->
         </dependency>
     </dependencies>
 
