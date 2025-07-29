@@ -12,9 +12,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
 @RequestMapping("/api")
+@Tag(name = "Customer and Student Management", description = "Müşteri ve öğrenci işlemleri için API")
 public class Controller {
 
     private final CustomerService customerService;
@@ -31,6 +34,7 @@ public class Controller {
     // --- CUSTOMER ENDPOINTS --- //
 
     @GetMapping("/customers")
+    @Operation(summary = "Tüm Müşterileri Listele", description = "Mevcut tüm müşteri kayıtlarını döndürür.\n")
     public ResponseEntity<?> getCustomers(@RequestHeader(value = "Authorization", required = false) String authHeader) {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
@@ -69,6 +73,7 @@ public class Controller {
     }
 
     @PostMapping("/customers")
+    @Operation(summary = "Müşteri Ekle", description = "Yeni bir müşteri kaydı oluşturur.\n")
     public ResponseEntity<?> addCustomer(@Valid @RequestBody Customer customer,
                                          BindingResult bindingResult,
                                          @RequestHeader(value = "Authorization", required = false) String authHeader) {
@@ -114,6 +119,7 @@ public class Controller {
     // --- STUDENT ENDPOINTS --- //
 
     @PostMapping("/students")
+    @Operation(summary = "Öğrenci Ekle", description = "Yeni bir öğrenci kaydı oluşturur.\n")
     public ResponseEntity<?> addStudent(@Valid @RequestBody Student student,
                                         BindingResult bindingResult,
                                         @RequestHeader(value = "Authorization", required = false) String authHeader) {
@@ -139,6 +145,7 @@ public class Controller {
     }
 
     @GetMapping("/students")
+    @Operation(summary = "Tüm Öğrencileri Listele", description = "Mevcut tüm öğrenci kayıtlarını döndürür.\n")
     public Iterable<Student> getStudents() {
         return studentService.getAllStudents();
     }
